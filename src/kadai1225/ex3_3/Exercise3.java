@@ -6,7 +6,7 @@ public class Exercise3 {
 
 		if (args.length % 2 != 0) {
 			System.out.println("商品情報（商品名、価格）は、ペアで入力してください");
-			System.exit(0);
+			return;
 		}
 
 		Item item = new Item();

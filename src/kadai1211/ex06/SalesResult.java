@@ -12,9 +12,14 @@ public class SalesResult {
 		records[2] = Integer.parseInt(args[3]);
 
 		int total = 0;
-		for (int i = 0; i < records.length; i++) {
-			System.out.println("[" + i + "] total => " + total);
-			total += records[i];
+//		for (int i = 0; i < records.length; i++) {
+//			System.out.println("[" + i + "] total => " + total);
+//			total += records[i];
+//		}
+
+		for (int x : records) {
+			System.out.println(x);
+			total += x;
 		}
 
 		double average = getAverage(total, records.length);
