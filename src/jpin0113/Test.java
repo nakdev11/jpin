@@ -2,9 +2,11 @@ package jpin0113;
 
 public class Test {
 
-	private int num;
+	private int num = 10;
 
 	public static void execute() {
-		System.out.println(num);
+		// staticメンバからdynamicメンバはアクセス出来ない
+		//		System.out.println(num);
+		System.out.println(new Test().num);
 	}
 }
