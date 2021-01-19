@@ -1,4 +1,4 @@
-package kadai0114.ex3_3;
+package kadai0114.ex4_1;
 
 import kadai0114.commons.utility.StandardInputReader;
 import kadai0114.ex3_2.article.RentalApartment;
@@ -32,21 +32,28 @@ class RentalApartmentManagement {
 
     	// リストの最大数量まで繰り返す
     	for (int i = 0; i < RentalApartmentList.MAX_QUANTITY; i++) {
-    			// コンソールから賃貸アパートのデータを入力する
-    			String name = StandardInputReader.getInputString("アパート名称を入力してください:");
-    			// アパート名称に空文字が入力された場合、繰り返しを終了する
-    			if (name.length() == 0) {
-    				break;
-    			}
-    				int number = StandardInputReader.getInputInt("部屋番号を入力してください:");
-    				int price = StandardInputReader.getInputInt("賃料を入力してください:");
-    				double deposit = StandardInputReader.getInputDouble("敷金を入力してください:");
-    				double keyMoney = StandardInputReader.getInputDouble("礼金を入力してください:");
-    				// 改行する
-    				System.out.println();
+    		// コンソールから賃貸アパートのデータを入力する
+    		String name = StandardInputReader.getInputString("アパート名称を入力してください:");
+    		// アパート名称に空文字が入力された場合、繰り返しを終了する
+    		if (name.length() == 0) {
+    			break;
+    		}
+    		try {
+    			int number = StandardInputReader.getInputInt("部屋番号を入力してください:");
+    			int price = StandardInputReader.getInputInt("賃料を入力してください:");
+    			double deposit = StandardInputReader.getInputDouble("敷金を入力してください:");
+    			double keyMoney = StandardInputReader.getInputDouble("礼金を入力してください:");
 
-    				// 賃貸アパートインスタンスの生成し、リストに追加する
-    				apartmentList.addRentalApartment(new RentalApartment(name, number, price, deposit, keyMoney));
+    			// 改行する
+    			System.out.println();
+
+    			// 賃貸アパートインスタンスの生成し、リストに追加する
+    			apartmentList.addRentalApartment(new RentalApartment(name, number, price, deposit, keyMoney));
+
+    		} catch (NumberFormatException e) {
+    			System.out.println("数値を入力してください");
+    			System.out.println();
+    		}
     	}
     }
 
