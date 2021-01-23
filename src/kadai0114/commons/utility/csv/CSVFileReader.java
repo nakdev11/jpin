@@ -9,51 +9,51 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * CSV�t�@�C���̓Ǎ��݂��s���܂�.
- *
- * ���̃N���X���p�������T�u�N���X����邱�Ƃ͂ł��܂���.
- *
+ * CSVファイルの読込みを行います.
+ * 
+ * このクラスを継承したサブクラスを作ることはできません.
+ * 
  * @author BetterOneself
  */
 public final class CSVFileReader {
 
-    /** CSV�t�@�C���̃J���}���� */
+    /** CSVファイルのカンマ文字 */
     private static final String COMMA_STRING = ",";
 
-    /** CSV�t�@�C���̃t�@�C�� */
+    /** CSVファイルのファイル */
     private File csvFile = null;
 
-    /** CSV�t�@�C����ǂݍ��ނ��߂�Reader */
+    /** CSVファイルを読み込むためのReader */
     private BufferedReader reader = null;
 
-    /** �N�H�[�e�[�V���������̉� */
+    /** クォーテーション除去の可否 */
     private boolean quoteRemoving = false;
 
     /**
-     * �����ΏۂƂȂ�N�H�[�e�[�V�����̏W�� �f�t�H���g�l�F�u"�v�u'�v
+     * 除去対象となるクォーテーションの集合 デフォルト値：「"」「'」
      */
     private char[] quoteChars = { '\'', '"' };
 
     /**
-     * �R���X�g���N�^.
-     *
-     * �w�肳�ꂽ�p�X�����ɁAFile�C���X�^���X�𐶐����ĕێ����܂�.
-     *
+     * コンストラクタ.
+     * 
+     * 指定されたパスを元に、Fileインスタンスを生成して保持します.
+     * 
      * @param path
-     *            �Ǎ��ݑΏۂ̃t�@�C���ւ̃p�X
+     *            読込み対象のファイルへのパス
      * @throws FileNotFoundException
-     *             �w�肳�ꂽ�t�@�C����������Ȃ��ꍇ
+     *             指定されたファイルが見つからない場合
      */
     public CSVFileReader(String path) throws FileNotFoundException {
         csvFile = new File(path);
     }
 
     /**
-     * �J������ǂݍ��݂܂�.
-     *
-     * @return �J�����Q�̃��X�g
+     * カラムを読み込みます.
+     * 
+     * @return カラム群のリスト
      * @throws java.io.IOException
-     *             �ǂݍ��݂Ɏ��s�����ꍇ
+     *             読み込みに失敗した場合
      */
     public List<String[]> read() throws IOException {
         List<String[]> columnsList = null;
@@ -67,20 +67,20 @@ public final class CSVFileReader {
     }
 
     /**
-     * Reader�����������܂�.
-     *
+     * Readerを初期化します.
+     * 
      * @throws IOException
-     *             Reader�̏������Ɏ��s�����ꍇ
+     *             Readerの初期化に失敗した場合
      */
     private void initReader() throws IOException {
         reader = new BufferedReader(new FileReader(csvFile));
     }
 
     /**
-     * Reader����܂�.
-     *
-     * ����ۂɗ�O�����������ꍇ�ł��A��O�𓊂��܂���.
-     * �{���͗�O���O���o�͂���悤�Ɏ������܂��B
+     * Readerを閉じます.
+     * 
+     * 閉じる際に例外が発生した場合でも、例外を投げません.
+     * 本来は例外ログを出力するように実装します。
      */
     private void closeReaderQuietly() {
         if (reader == null) {
@@ -90,26 +90,26 @@ public final class CSVFileReader {
         try {
             reader.close();
         } catch (IOException e) {
-            // �{���͂����ŁA��O���O�����o�͂��ׂ��ł�.
-            // �{���K�ł͉������������{���܂���.
+            // 本来はここで、例外ログ等を出力すべきです.
+            // 本演習では何も処理を実施しません.
         } finally {
             reader = null;
         }
     }
 
     /**
-     * Reader���g�p���ăt�@�C����ǂݍ��݂Ȃ���J������List���쐬���܂�.
-     *
-     * @return �J������List
+     * Readerを使用してファイルを読み込みながらカラムのListを作成します.
+     * 
+     * @return カラムのList
      * @throws IOException
-     *             �s�̓ǂݎ��Ɏ��s�����ꍇ
+     *             行の読み取りに失敗した場合
      */
     private List<String[]> readFromCsv() throws IOException {
-        // �J������List��������
+        // カラムのListを初期化
         List<String[]> columnsList = new ArrayList<String[]>();
 
         String line = null;
-        // �t�@�C������s��ǂݎ��Ȃ���J�����̕�����z����쐬
+        // ファイルから行を読み取りながらカラムの文字列配列を作成
         while ((line = reader.readLine()) != null) {
             String[] columns = makeColumnArray(line);
             columnsList.add(columns);
@@ -118,29 +118,29 @@ public final class CSVFileReader {
     }
 
     /**
-     * �w�肳�ꂽ�J���}��؂蕶������J�����̕�����z��ɕϊ����܂�.
-     *
+     * 指定されたカンマ区切り文字列をカラムの文字列配列に変換します.
+     * 
      * @param line
-     *            �J���}��؂蕶����
-     * @return �J�����̕�����z��
+     *            カンマ区切り文字列
+     * @return カラムの文字列配列
      */
     private String[] makeColumnArray(String line) {
-        // ���蕶�����폜����ݒ�̏ꍇ�A�폜�����{����
+        // 括り文字を削除する設定の場合、削除を実施する
         if (quoteRemoving) {
             line = removeQuoteChar(line);
         }
-        // String#split���g�p���āA�J���}��؂蕶����𕶎���z��ɕϊ�
+        // String#splitを使用して、カンマ区切り文字列を文字列配列に変換
         return line.split(COMMA_STRING);
     }
 
     /**
-     * �����̕����񂩂犇�蕶�����������������Ԃ��܂�.
-     *
-     * �ݒ肳��Ă��銇�蕶��������������̐擪�Ɩ����̑o���� ���݂��Ȃ��ꍇ�A���̕������Ԃ��܂�.
-     *
+     * 引数の文字列から括り文字を除いた文字列を返します.
+     * 
+     * 設定されている括り文字が引数文字列の先頭と末尾の双方に 存在しない場合、元の文字列を返します.
+     * 
      * @param source
-     *            ���蕶���폜�Ώۂ̕�����
-     * @return ���蕶������������������
+     *            括り文字削除対象の文字列
+     * @return 括り文字を除去した文字列
      */
     private String removeQuoteChar(String source) {
         for (char quote : quoteChars) {
@@ -150,28 +150,28 @@ public final class CSVFileReader {
     }
 
     // ==================================
-    // CSVFileReader�̋����ݒ胁�\�b�h�Q
+    // CSVFileReaderの挙動設定メソッド群
     // ==================================
 
     /**
-     * ���蕶�����폜���邩�ݒ肵�܂�.
-     *
-     * �f�t�H���g�ł͍폜���Ȃ��ݒ�ƂȂ�܂�.
-     *
+     * 括り文字を削除するか設定します.
+     * 
+     * デフォルトでは削除しない設定となります.
+     * 
      * @param isRemoved
-     *            <code>true</code>:�폜����A<code>false</code>:�폜���Ȃ�
+     *            <code>true</code>:削除する、<code>false</code>:削除しない
      */
     public void setQuoteRemoving(boolean isRemoved) {
         quoteRemoving = isRemoved;
     }
 
     /**
-     * �폜���銇�蕶����ݒ肵�܂�.
-     *
-     * <code>null</code>���w�肵���ꍇ�A�폜�͎��{����܂���.
-     *
+     * 削除する括り文字を設定します.
+     * 
+     * <code>null</code>を指定した場合、削除は実施されません.
+     * 
      * @param strs
-     *            ���蕶���̏W��
+     *            括り文字の集合
      */
     public void setQuoteChars(char[] strs) {
         if (strs == null) {
@@ -182,12 +182,12 @@ public final class CSVFileReader {
     }
 
     /**
-     * �폜���銇�蕶����ݒ肵�܂�.
-     *
-     * <code>null</code>���w�肵���ꍇ�A�폜�͎��{����܂���.
-     *
+     * 削除する括り文字を設定します.
+     * 
+     * <code>null</code>を指定した場合、削除は実施されません.
+     * 
      * @param str
-     *            ���蕶���̏W��
+     *            括り文字の集合
      */
     public void setQuoteChars(String str) {
         if (str == null) {

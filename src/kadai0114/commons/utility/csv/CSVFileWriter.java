@@ -8,48 +8,48 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * CSV�t�@�C�����������ޕ����X�g���[���N���X�ł�.
- *
+ * CSVファイルを書き込む文字ストリームクラスです.
+ * 
  * @author BetterOneself
  */
 public final class CSVFileWriter {
 
-    /** CSV�t�@�C���̃J���}���� */
+    /** CSVファイルのカンマ文字 */
     private static final String COMMA_STRING = ",";
 
-    /** CSV�t�@�C���̃t�@�C�� */
+    /** CSVファイルのファイル */
     private File csvFile = null;
 
-    /** CSV�t�@�C�����������ނ��߂�Writer */
+    /** CSVファイルを書き込むためのWriter */
     private BufferedWriter writer = null;
 
-    /** �N�H�[�e�[�V�����ǉ��̉� */
+    /** クォーテーション追加の可否 */
     private boolean quoteAdding = false;
 
-    /** �N�H�[�e�[�V���� */
+    /** クォーテーション */
     private char quoteChar = '"';
 
     /**
-     * �R���X�g���N�^.
-     *
-     * �w�肳�ꂽ�p�X�����ɁAFile�I�u�W�F�N�g���쐬���ĕێ����܂�.
-     *
+     * コンストラクタ.
+     * 
+     * 指定されたパスを元に、Fileオブジェクトを作成して保持します.
+     * 
      * @param path
-     *            �Ǎ��ݑΏۂ̃t�@�C���ւ̃p�X
+     *            読込み対象のファイルへのパス
      * @throws FileNotFoundException
-     *             �w�肳�ꂽ�t�@�C����������Ȃ��ꍇ
+     *             指定されたファイルが見つからない場合
      */
     public CSVFileWriter(String path) throws FileNotFoundException {
         csvFile = new File(path);
     }
 
     /**
-     * �J�����̓��e��CSV���㏑�����܂�.
-     *
+     * カラムの内容でCSVを上書きします.
+     * 
      * @param columnsList
-     *            �������ރJ������List
+     *            書き込むカラムのList
      * @throws java.io.IOException
-     *             �㏑���Ɏ��s�����ꍇ
+     *             上書きに失敗した場合
      */
     public void overwrite(List<String[]> columnsList) throws IOException {
         try {
@@ -62,12 +62,12 @@ public final class CSVFileWriter {
     }
 
     /**
-     * �J�����̓��e��CSV�ɒǋL���܂�.
-     *
+     * カラムの内容をCSVに追記します.
+     * 
      * @param columns
-     *            �ǋL����J����
+     *            追記するカラム
      * @throws IOException
-     *             �ǋL�Ɏ��s�����ꍇ
+     *             追記に失敗した場合
      */
     public void append(String[] columns) throws IOException {
         try {
@@ -80,29 +80,29 @@ public final class CSVFileWriter {
     }
 
     /**
-     * Writer�����������܂�.
-     *
+     * Writerを初期化します.
+     * 
      * @throws IOException
-     *             Writer�̏������Ɏ��s�����ꍇ
+     *             Writerの初期化に失敗した場合
      */
     private void initWriter(boolean append) throws IOException {
         writer = new BufferedWriter(new FileWriter(csvFile, append));
     }
 
     /**
-     * Writer��flush���܂�.
-     *
+     * Writerをflushします.
+     * 
      * @throws IOException
-     *             flush�Ɏ��s�����ꍇ
+     *             flushに失敗した場合
      */
     private void flush() throws IOException {
         writer.flush();
     }
 
     /**
-     * Writer����܂�.
-     *
-     * ����ۂɗ�O�����������ꍇ�ł��A��O�𓊂��܂���B�{���͗�O���O���o�͂���悤�Ɏ������܂�.
+     * Writerを閉じます.
+     * 
+     * 閉じる際に例外が発生した場合でも、例外を投げません。本来は例外ログを出力するように実装します.
      */
     private void closeQuietly() {
         if (writer == null) {
@@ -112,79 +112,79 @@ public final class CSVFileWriter {
         try {
             writer.close();
         } catch (IOException e) {
-            // �{���͂����ŁA��O���O�����o�͂��ׂ��ł�.
-            // �{���K�ł͉������������{���܂���.
+            // 本来はここで、例外ログ等を出力すべきです.
+            // 本演習では何も処理を実施しません.
         } finally {
             writer = null;
         }
     }
 
     /**
-     * Writer���g�p���ăJ������List��CSV�t�@�C���ɏ������݂܂�.
-     *
-     * @param �J������
+     * Writerを使用してカラムのListをCSVファイルに書き込みます.
+     * 
+     * @param カラムの
      *            List
      * @throws IOException
-     *             CSV�t�@�C���ւ̏������݂Ɏ��s�����ꍇ
+     *             CSVファイルへの書き込みに失敗した場合
      */
     private void writeToCsv(List<String[]> columnsList) throws IOException {
-        // �w�肳�ꂽ������z��List�����ɓǂݍ��݁A�J���}��؂蕶������쐬
+        // 指定された文字列配列Listを順に読み込み、カンマ区切り文字列を作成
         for (String[] columns : columnsList) {
             writeToCsv(columns);
         }
     }
 
     /**
-     * Writer���g�p���ăJ������CSV�t�@�C���ɏ������݂܂�.
-     *
+     * Writerを使用してカラムをCSVファイルに書き込みます.
+     * 
      * @param columns
-     *            �J����
+     *            カラム
      * @throws IOException
-     *             CSV�t�@�C���ւ̏������݂Ɏ��s�����ꍇ
+     *             CSVファイルへの書き込みに失敗した場合
      */
     private void writeToCsv(String[] columns) throws IOException {
-        // �J���}��؂蕶����ɕϊ�
+        // カンマ区切り文字列に変換
         String line = makeLine(columns);
-        // �쐬�������������������
+        // 作成した文字列を書き込み
         writer.write(line);
-        // ���s�R�[�h����������
+        // 改行コードを書き込み
         writer.newLine();
     }
 
     /**
-     * ������z����A�J���}��؂�̕�����ɕϊ����܂�.
-     *
+     * 文字列配列を、カンマ区切りの文字列に変換します.
+     * 
      * @param columns
-     *            ������z��
-     * @return �J���}��؂�̕�����
+     *            文字列配列
+     * @return カンマ区切りの文字列
      */
     private String makeLine(String[] columns) {
-        // �w�肳�ꂽ�����񂪋�z��̏ꍇ�A���當�����Ԃ�
+        // 指定された文字列が空配列の場合、から文字列を返す
         if (columns.length == 0) {
             return "";
         }
 
-        // StringBuffer���쐬���A�J���}��؂蕶�������������
+        // StringBufferを作成し、カンマ区切り文字列を書き込む
         StringBuffer lineSb = new StringBuffer();
         for (int i = 0; i < columns.length - 1; i++) {
-            // 1�̕�������������ށi�K�v�ł���΃N�H�[�e�[�V������ݒ�j
+            // 1つの文字列を書き込む（必要であればクォーテーションを設定）
             lineSb.append(makeQuoteLineIfRequired(columns[i]));
-            // �J���}��������������
+            // カンマ文字を書き込む
             lineSb.append(COMMA_STRING);
         }
-        // �Ō�̕��������������
+        // 最後の文字列を書き込む
         lineSb.append(makeQuoteLineIfRequired(columns[columns.length - 1]));
         return lineSb.toString();
     }
 
     /**
-     * �K�v�ɉ����ăN�H�[�e�[�V������ݒ肷��.
-     *
-     * ��̓I�ɂ́A<code>quoteAdding</code>��<code>true</code>�̏ꍇ�A�N�H�[�e�[�V�������������݂܂�.
-     *
+     * 必要に応じてクォーテーションを設定する.
+     * 
+     * 具体的には、<code>quoteAdding</code>が<code>true</code>の場合、クォーテーションを書き込みます.
+     * 
      * @param column
-     *            ������
-     * @return �N�H�[�e�[�V�����t��������
+     *            文字列
+     * @return クォーテーション付き文字列
      */
     private String makeQuoteLineIfRequired(String column) {
         if (!quoteAdding) {
@@ -194,16 +194,16 @@ public final class CSVFileWriter {
     }
 
     // ==================================
-    // CSVFileWriter�̋����ݒ胁�\�b�h�Q
+    // CSVFileWriterの挙動設定メソッド群
     // ==================================
 
     /**
-     * �o�͂����e�J���������邩�ۂ��w�肵�܂�.
-     *
-     * �f�t�H���g�̊��蕶���� "(�_�u���N�H�[�e�[�V����)�ł�
-     *
+     * 出力される各カラムを括るか否か指定します.
+     * 
+     * デフォルトの括り文字は "(ダブルクォーテーション)です
+     * 
      * @param isAdded
-     *            <code>true</code>:���� <code>false</code>:����Ȃ�
+     *            <code>true</code>:括る <code>false</code>:括らない
      * @see #setQuoteChar
      */
     public void setQuoteAdding(boolean isAdded) {
@@ -211,12 +211,12 @@ public final class CSVFileWriter {
     }
 
     /**
-     * �e�J���������镶�����w�肵�܂�.
-     *
-     * �f�t�H���g�̊��蕶���� "(�_�u���N�H�[�e�[�V����)�ł�
-     *
+     * 各カラムを括る文字を指定します.
+     * 
+     * デフォルトの括り文字は "(ダブルクォーテーション)です
+     * 
      * @param quoteChar
-     *            ���蕶��
+     *            括り文字
      */
     public void setQuoteChar(char quoteChar) {
         this.quoteChar = quoteChar;
