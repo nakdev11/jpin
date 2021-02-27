@@ -1,18 +1,15 @@
 package jpin210224;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
-public class ShoppingCart {
+public class ShoppingCart implements Iterable<Order>{
 
 	private List<Order> orders = new ArrayList<>();
 
 	public void addOrder(Order order) {
 		orders.add(order);
-	}
-
-	public List<Order> getOrder() {
-		return orders;
 	}
 
 	public int getTotal() {
@@ -23,5 +20,9 @@ public class ShoppingCart {
 		return total;
 	}
 
+	@Override
+	public Iterator<Order> iterator() {
+		return this.orders.iterator();
+	}
 
 }
