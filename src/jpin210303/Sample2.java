@@ -18,5 +18,9 @@ public class Sample2 {
 		System.out.println(cal.get(Calendar.YEAR));
 		System.out.println(cal.get(Calendar.MONTH) + 1);
 		System.out.println(cal.get(Calendar.DATE));
+
+		Calendar birth = Calendar.getInstance();
+		
+		
 	}
 }
